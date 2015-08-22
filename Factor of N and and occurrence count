@@ -1,0 +1,119 @@
+	/**
+	 * Function to find factor based on primes given and count of number of occurrence
+	 * @param n Input number 
+	 * @param primes Array of prime number
+	 * @return return all factor and their count int two dimensional array
+	 */
+
+	static long[][] factorX(long n, int[] primes)
+	{
+		long[][] ret = new long[20][2];
+		int rp = 0;
+		for(int p : primes){
+			if((long)p * p > n)break;
+			int i;
+			for(i = 0;n % p == 0;n /= p, i++);
+			if(i > 0){
+				ret[rp][0] = p;
+				ret[rp][1] = i;
+				rp++;
+			}
+		}
+		if(n == 1)return Arrays.copyOf(ret, rp);
+		
+		// P^2
+		long sq = (long)Math.sqrt(n);
+		for(long u = Math.max(2, sq-2);u <= sq+2;u++){
+			if(u*u == n){
+				ret[rp][0] = u;
+				ret[rp][1] = 2;
+				rp++;
+				return Arrays.copyOf(ret, rp);
+			}
+		}
+		
+		// Prime
+		if(doMirrorRabin(n)){
+			ret[rp][0] = n;
+			ret[rp][1] = 1;
+			rp++;
+			return Arrays.copyOf(ret, rp);
+		}
+		
+		// P*Q
+		long f = rho(n);
+		if(f == -1)throw new ArithmeticException();
+		if(f > n/f)f = n/f;
+		ret[rp][0] = f; ret[rp][1] = 1; rp++;
+		ret[rp][0] = n/f; ret[rp][1] = 1; rp++;
+		return Arrays.copyOf(ret, rp);
+	}
+	
+	public static boolean doMirrorRabin(long n)
+	{
+//		int[] P = {2, 7, 61}; // n<4759123141
+		int[] P = {2,3,5,7,11,13,17,19,23}; // n=long
+		int s = Long.numberOfTrailingZeros(n-1);
+		long d = n-1>>s;
+		outer:
+		for(int a : P){
+			if(a >= n)continue;
+			
+			long mul = a;
+			long ad = 1;
+			for(long e = d;e > 0;e>>>=1){
+				if((e&1)==1)ad = mul(ad, mul, n);
+				mul = mul(mul, mul, n);
+			}
+			if(ad == 1)continue;
+			
+			for(int r = 0;r < s;r++){
+				if(ad == n-1)continue outer;
+				ad = mul(ad, ad, n);
+			}
+			return false;
+		}
+		return true;
+	}
+
+	static long rho(long n)
+	{
+		Random gen = new Random();
+		for(int u = 0;u < 100;u++){
+			long ran = (gen.nextLong()&Long.MAX_VALUE) % n;
+			long x = 2, y = 2, d = 1;
+			while(d == 1){
+				x = (mul(x, x, n)+ran)%n;
+				y = (mul(y, y, n)+ran)%n;
+				y = (mul(y, y, n)+ran)%n;
+				d = gcd(Math.abs(x-y), n);
+			}
+			if(d < n)return d;
+		}
+		return -1;
+	}
+	
+	public static long mul(long a, long b, long mod)
+	{
+		a %= mod;
+		long ret = 0;
+		int x = 63-Long.numberOfLeadingZeros(b);
+		for(;x >= 0;x--){
+			ret += ret;
+			if(ret >= mod)ret -= mod;
+			if(b<<~x<0){
+				ret += a;
+				if(ret >= mod)ret -= mod;
+			}
+		}
+		return ret;
+	}
+	
+	public static long gcd(long a, long b) {
+		while (b > 0){
+			long c = a;
+			a = b;
+			b = c % b;
+		}
+		return a;
+	}
