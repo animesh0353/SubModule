@@ -1,0 +1,19 @@
+/**
+ * Function to multiply a and b with modulo mod
+ */
+ 
+	public static long mul(long a, long b, long mod)
+	{
+		a %= mod;
+		long ret = 0;
+		int x = 63-Long.numberOfLeadingZeros(b);
+		for(;x >= 0;x--){
+			ret += ret;
+			if(ret >= mod)ret -= mod;
+			if(b<<~x<0){
+				ret += a;
+				if(ret >= mod)ret -= mod;
+			}
+		}
+		return ret;
+	}
