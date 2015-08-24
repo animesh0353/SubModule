@@ -1,0 +1,30 @@
+// class to store Pair which can be used to store and hash. As it can check with element to element pair comparison
+	static class Pair
+	{
+		int first;
+		int second;
+		public Pair(int first, int second) 
+		{
+			this.first = first;
+			this.second = second;
+		}
+		public boolean equals(Object obj)
+	    {
+	        if(this == obj)
+	            return true;
+	        if((obj == null) || (obj.getClass() != this.getClass()))
+	            return false;
+	        // object must be Pair at this point
+	        Pair pair = (Pair)obj;
+	        return first == pair.first && (second == pair.second);
+	    }
+
+		@Override
+		public int hashCode()
+		{
+			int hash = 7;
+	        hash = 31 * hash + first;
+	        hash = 31 * hash + second;
+	        return hash;
+		}
+	}
