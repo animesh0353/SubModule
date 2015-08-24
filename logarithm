@@ -1,0 +1,12 @@
+	
+	/**
+	 * Function to calculate log base 2 or any base
+	 * @param num  Input number
+	 * @param base  Input base
+	 * @return return Ceil of logN of given base
+	 */
+	
+	int logarithm(int num, int base)
+	{
+		return (int) Math.ceil((Math.log(num)/Math.log(base)));
+	}
