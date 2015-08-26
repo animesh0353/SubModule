@@ -1,0 +1,17 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class Vertex 
+{
+	int id;
+	int distance;
+	Map<Integer,Integer> edgeMap;
+	
+	// Constructor to initialize the vertex
+	public Vertex(int id, int MAX) 
+	{
+		this.id = id;
+		this.distance = MAX;
+		this.edgeMap = new HashMap<Integer, Integer>();
+	}
+}
