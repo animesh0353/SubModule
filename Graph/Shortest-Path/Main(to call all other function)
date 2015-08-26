@@ -1,0 +1,55 @@
+public class Main {
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		// give weight for weighted graph else for unweighed graph put any random value
+		Graph graph = new Graph(9);
+	    graph.addEdge(1, 2, 4);
+	    graph.addEdge(1, 8, 8);
+	    graph.addEdge(2, 3, 8);
+	    graph.addEdge(2, 8, 11);
+	    graph.addEdge(3, 4, 7);
+	    graph.addEdge(3, 9, 2);
+	    graph.addEdge(3, 6, 4);
+	    graph.addEdge(4, 5, 10);
+	    graph.addEdge(4, 6, 14);
+	    graph.addEdge(5, 6, 10);
+	    graph.addEdge(6, 7, 2);
+	    graph.addEdge(7, 9, 6);
+	    graph.addEdge(7, 8, 1);
+	    graph.addEdge(8, 9, 7);
+	 
+	    // Call BFS Function
+	    System.out.println("Following is Breadth First Traversal (starting from vertex 2) \n");
+	    graph.BFS(1);
+	 
+	    
+	    boolean[] visited = new boolean[Graph.N + 1];
+	    
+	    // Call to DFS Function
+	    System.out.println("\n Following is Depth First Traversal (starting from vertex 2) \n");
+	    for(int i=Graph.N; i>0 ; i--)
+	    	if(!visited[i])
+	    		graph.DFS(i, visited);
+	    
+	    // Print Adjacency List of all Vertex
+	    System.out.println();
+	    graph.printAdjacencyList();
+	    
+	    System.out.println("==================");
+	    // Call to Dijkstra all pair shortest path
+	    for (int i = 1; i <= Graph.N; i++) 
+	    {
+			graph.dijkstra(i);
+			for (int j = 1; j <= Graph.N; j++)
+				System.out.printf("%4d ",graph.vertexIdMap.get(j).distance);
+			System.out.println();
+		}
+	    
+	    // Call floyd Warshall Function to find all pair shortest path 
+	    System.out.println("==================");
+	    graph.floydWarshall();
+	}
+
+}
