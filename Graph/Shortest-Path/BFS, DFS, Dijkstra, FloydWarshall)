@@ -1,0 +1,204 @@
+import java.util.*;
+
+public class Graph {
+
+	static int MAX = Integer.MAX_VALUE;  //(int)1e8;
+	// Map to store graph vertices and edges going out 
+	Map<Integer, Vertex> vertexIdMap;
+	// number of vertices
+	static int N;
+	
+	/**
+	 * Constructor to create initial graph of given size  Starting from 1 to N 
+	 * @param size number of vertices
+	 */
+	public Graph(int size)
+	{
+		N = size;
+		vertexIdMap = new HashMap<Integer, Vertex>();
+		for(int i = 1; i<=size; i++)
+			vertexIdMap.put(i, new Vertex(i, MAX));
+	}
+	
+	/**
+	 * Function to add edges to the graph it will create undirected graph
+	 * @param source Vertices  
+	 * @param destination Vertices
+	 */
+	void addEdge(int source, int destination, int weight)
+	{
+		// remove self loop
+		if(source == destination)
+			return;
+		Vertex vertex = vertexIdMap.get(source);
+		Integer prevWeight = vertex.edgeMap.get(destination);
+		// checks if edge with same destination is there and has weight greater than the current edge than 
+		// replace with current weight or no edge is there else leave it
+		if(prevWeight == null || prevWeight > weight)
+			vertex.edgeMap.put(destination, weight);
+		
+		// for undirected graph add both edges on both sides
+		vertex = vertexIdMap.get(destination);
+		prevWeight = vertex.edgeMap.get(source);
+		// checks if edge with same destination is there and has weight greater than the current edge than 
+		// replace with current weight or no edge is there else leave it
+		if(prevWeight == null || prevWeight > weight)
+			vertex.edgeMap.put(source, weight);
+	}
+	
+	/**
+	 * Function to print the adjacency list of all edges present and weight
+	 */
+	public void printAdjacencyList()
+	{
+		for (int i = 1; i <= N; i++) 
+		{
+			Vertex vertex = vertexIdMap.get(i);
+			System.out.print(vertex.id+"  : ");
+			Map<Integer, Integer> edgeList = vertex.edgeMap;
+			for(Map.Entry<Integer, Integer> edgeEntry : edgeList.entrySet())
+				System.out.printf(" %d (%d) , ",edgeEntry.getKey(),edgeEntry.getValue());
+			System.out.println();
+		}
+	}
+	
+	/**
+	 * Function for Breadth First Search to find all connected component run for 1 to N separately
+	 * from the calling Function  
+	 * @param source Vertex
+	 */
+	void BFS(int source)
+	{
+		boolean[] visited = new boolean[N+1];
+		// used queue for BFS
+		Queue<Integer> queue = new LinkedList<Integer>(); 
+		Set<Integer> edgeList;
+		queue.add(source);
+		visited[source] = true;
+		while(!queue.isEmpty())
+		{
+			int vertexId = queue.remove();
+			
+			System.out.print(vertexId+" --> ");
+			edgeList = vertexIdMap.get(vertexId).edgeMap.keySet();
+			for (Integer edge : edgeList)
+			{
+				if(visited[edge] == false)
+				{
+					visited[edge] = true;
+					queue.add(edge);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Function to find Depth First Search to find all connected component run for 1 to N separately
+	 * from the calling Function  
+	 * @param source vertex
+	 * @param visited An array for of size N+1 for visited function
+	 */
+	void DFS(int source, boolean[] visited)
+	{
+		visited[source] = true;
+		System.out.print(source+" --> ");
+		// Iterate over and call recursively
+		Set<Integer> edgeList = vertexIdMap.get(source).edgeMap.keySet();
+		for (Integer edge : edgeList)
+		{
+			if(!visited[edge])
+				DFS(edge, visited);
+		}
+	}
+	
+	/**
+	 * Function to find shortest path between source vertex and all other vertex
+	 * @param source vertex
+	 */
+	public void dijkstra(int source)
+	{
+		// Fill all vertex distance with MAX value
+		for (int i = 1; i <= N; i++) 
+			vertexIdMap.get(i).distance = MAX;
+		
+		// Set Shortest Path Tree which contains finalized distance while traversing Dijkstra
+		Set<Integer> spt = new HashSet<Integer>();
+		Vertex vertex = vertexIdMap.get(source);
+		vertex.distance = 0;
+		PriorityQueue<Vertex> pq = new PriorityQueue<Vertex>(50, new Comparator<Vertex>() {
+
+			@Override
+			public int compare(Vertex o1, Vertex o2) 
+			{
+				return Integer.compare(o1.distance, o2.distance);
+			}
+		});
+		
+		pq.add(vertex);
+		while(!pq.isEmpty())
+		{
+			vertex = pq.remove();
+			spt.add(vertex.id);
+			for(Map.Entry<Integer, Integer> edgeEntry : vertex.edgeMap.entrySet())
+			{
+				int vertexId = edgeEntry.getKey();
+				int nextWeight = edgeEntry.getValue();
+				if(spt.contains(vertexId))
+					continue;
+				Vertex adjVertex = vertexIdMap.get(vertexId);
+				if((vertex.distance != MAX) && (vertex.distance + nextWeight < adjVertex.distance))
+					adjVertex.distance = vertex.distance + nextWeight;
+				pq.add(adjVertex);
+			}
+		}
+	}
+	
+	/**
+	 * Function to generate all pair shortest path using floydWarshall algorithm
+	 * @return 2-D distance array contains all pair shortest path
+	 */
+	public int[][] floydWarshall()
+	{
+		int[][] dist = new int[N+1][N+1];
+		for (int i = 1; i <= N; i++)
+		{
+			Vertex vertex = vertexIdMap.get(i);
+			for (int j = 1; j <= N; j++) 
+			{
+				if(i == j)
+					dist[i][j] = 0;
+				else
+				{
+					if(vertex.edgeMap.containsKey(j))
+						dist[i][j] = vertex.edgeMap.get(j);
+					else
+						dist[i][j] = MAX;
+				}
+			}
+		}
+		
+		// Loop O(N^3) to all pair shortest path using intermediate vertices 1-N
+		for (int k = 1; k <= N; k++) 
+			for (int i = 1; i <= N; i++) 
+				for (int j = 1; j <= N; j++) 
+					if(dist[i][k] != MAX && dist[k][j] != MAX && (dist[i][k] + dist[k][j] < dist[i][j]))
+						dist[i][j] = dist[i][k] + dist[k][j];
+		
+		printAllPairDistance(dist);
+		return dist;
+	}
+	
+	/**
+	 * Function to print all pair shortest path generated by FloydWarshall algorithm
+	 * @param dist 2-D distance array contains all pair shortest path
+	 */
+	public void printAllPairDistance(int[][] dist)
+	{
+		for (int i = 1; i <= N; i++) 
+		{
+			for (int j = 1; j <= N; j++) 
+				System.out.printf("%4d ",dist[i][j]);
+			System.out.println();
+		}
+	}
+}
