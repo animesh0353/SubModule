@@ -147,8 +147,10 @@ public class Graph {
 					continue;
 				Vertex adjVertex = vertexIdMap.get(vertexId);
 				if((vertex.distance != MAX) && (vertex.distance + nextWeight < adjVertex.distance))
+				{
 					adjVertex.distance = vertex.distance + nextWeight;
-				pq.add(adjVertex);
+					pq.add(adjVertex);
+				}
 			}
 		}
 	}
