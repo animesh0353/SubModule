@@ -122,7 +122,7 @@ public class Graph {
 			vertexIdMap.get(i).distance = MAX;
 		
 		// Set Shortest Path Tree which contains finalized distance while traversing Dijkstra
-		Set<Integer> spt = new HashSet<Integer>();
+		//Set<Integer> spt = new HashSet<Integer>();
 		Vertex vertex = vertexIdMap.get(source);
 		vertex.distance = 0;
 		PriorityQueue<Vertex> pq = new PriorityQueue<Vertex>(50, new Comparator<Vertex>() {
@@ -138,13 +138,13 @@ public class Graph {
 		while(!pq.isEmpty())
 		{
 			vertex = pq.remove();
-			spt.add(vertex.id);
+			//spt.add(vertex.id);
 			for(Map.Entry<Integer, Integer> edgeEntry : vertex.edgeMap.entrySet())
 			{
 				int vertexId = edgeEntry.getKey();
 				int nextWeight = edgeEntry.getValue();
-				if(spt.contains(vertexId))
-					continue;
+				//if(spt.contains(vertexId))
+				//	continue;
 				Vertex adjVertex = vertexIdMap.get(vertexId);
 				if((vertex.distance != MAX) && (vertex.distance + nextWeight < adjVertex.distance))
 				{
