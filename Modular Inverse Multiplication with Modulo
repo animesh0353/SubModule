@@ -1,0 +1,11 @@
+public static long inv(long a, int p)
+	{
+		long ret = 1;
+		long mul = a;
+		for(long n = p-2;n > 0;n >>>= 1){
+			if((n&1)==1)ret = ret * mul % p;
+			mul = mul * mul % p;
+		}
+		return ret;
+	}
+	
