@@ -1,7 +1,7 @@
 /**
 	 * Function to return upper Bound in the given array 
 	 * eg int[] a = {1,2,5,6,9,10,11,34,99};
-	 * key = 0 or lower than first element  return -1
+	 * key = 0 or lower than first element  return 0
 	 * key is greater than last element then array length will be returned 
 	 * anything in between upper value will be returned
 	 * @param a Array of type int
