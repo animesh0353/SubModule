@@ -13,18 +13,10 @@
 		int low = -1, high = a.length;
 		while(high-low > 1){
 			int h = high+low>>>1;
-			if(a[h] >= key){
+			if(a[h] > key)
 				high = h;
-			}else{
+			else
 				low = h;
-			}
 		}
-		// to check index is out of length or not
-		if(high == a.length)
-			return a.length-1;
-		// to check if element is present or not
-		if(a[high] == key)
-			return high;
-		// else if element is not present then return index - 1
-		return high-1;
+		return low;
 	}
