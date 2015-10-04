@@ -1,0 +1,30 @@
+	/**
+	 * Function to return lower Bound in the given array 
+	 * eg int[] a = {1,2,5,6,9,10,11,34,99};
+	 * key = 0 or lower than first element  return -1
+	 * key is greater than last element then return index of last element 
+	 * anything in between lower value index will be returned
+	 * @param a Array of type int
+	 * @param key element to be searched of type int 
+	 * @return index of upper Bound of element 
+	 */
+	public static int lowerBound(int[] a, int key)
+	{
+		int low = -1, high = a.length;
+		while(high-low > 1){
+			int h = high+low>>>1;
+			if(a[h] >= key){
+				high = h;
+			}else{
+				low = h;
+			}
+		}
+		// to check index is out of length or not
+		if(high == a.length)
+			return a.length-1;
+		// to check if element is present or not
+		if(a[high] == key)
+			return high;
+		// else if element is not present then return index - 1
+		return high-1;
+	}
