@@ -1,0 +1,21 @@
+	/**
+	 * Binary Search function.
+	 * if element is not present return -1 else index of key
+	 * @param a
+	 * @param key
+	 * @return
+	 */
+	public static int binarySearch(int[] a, int key)
+	{
+		int low = 0, high = a.length;
+		while(high-low > 1){
+			int h = high+low>>>1;
+			if(a[h] > key)
+				high = h;
+			else
+				low = h;
+		}
+		if(a[low] == key)
+			return low;
+		return -1;
+	}
