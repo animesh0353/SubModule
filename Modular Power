@@ -1,0 +1,19 @@
+ /**
+     * Function to modular Power of two long number
+     * @param a First Number
+     * @param n Second Number
+     * @param mod Modular
+     * @return Modular Power
+     */
+    public static long modpow(long a, long n, long mod)
+	{
+		long ret = 1;
+		long mul = a;
+		for(;n > 0;n >>>= 1){
+			if((n&1)==1){
+				ret = (ret * mul) % mod;
+			}
+			mul = (mul * mul) % mod;
+		}
+		return ret;
+	}
